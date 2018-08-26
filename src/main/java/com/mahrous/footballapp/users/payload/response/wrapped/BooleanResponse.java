@@ -1,15 +1,16 @@
-package com.mahrous.footballapp.users.payload.response;
+package com.mahrous.footballapp.users.payload.response.wrapped;
 
+import com.mahrous.footballapp.users.payload.response.BooleanWithMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-public class BooleanResponse extends ResponseEntity<Boolean> {
+public class BooleanResponse extends ResponseEntity<BooleanWithMessage> {
     public BooleanResponse(HttpStatus status) {
         super(status);
     }
 
-    public BooleanResponse(Boolean body, HttpStatus status) {
+    public BooleanResponse(BooleanWithMessage body, HttpStatus status) {
         super(body, status);
     }
 
@@ -17,7 +18,7 @@ public class BooleanResponse extends ResponseEntity<Boolean> {
         super(headers, status);
     }
 
-    public BooleanResponse(Boolean body, MultiValueMap<String, String> headers, HttpStatus status) {
+    public BooleanResponse(BooleanWithMessage body, MultiValueMap<String, String> headers, HttpStatus status) {
         super(body, headers, status);
     }
 }

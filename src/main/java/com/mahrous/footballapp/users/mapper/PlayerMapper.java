@@ -39,7 +39,6 @@ public class PlayerMapper {
                     player.getLastName(),
                     player.getUserName(),
                     player.getEmail(),
-                    player.getPassword(),
                     player.getPlayerType());
         return basicPlayer;
     }

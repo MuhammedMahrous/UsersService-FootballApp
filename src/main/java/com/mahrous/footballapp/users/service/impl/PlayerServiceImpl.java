@@ -41,9 +41,14 @@ public class PlayerServiceImpl implements PlayerService {
     public Player find(String userName) {
         Player player = null;
         try {
+            logger.info("Starting Looking for a player with username: {}", userName);
             Optional<Player> optionalPlayer = playerRepo.findByUserName(userName);
-            if (optionalPlayer.isPresent())
+            logger.info("Completed finding a player with username: {}", userName);
+
+            if (optionalPlayer.isPresent()) {
                 player = optionalPlayer.get();
+                logger.info("player : {}", player);
+            }
         } catch (Exception e) {
             logger.error("Couldn't find a User with username: {}", userName);
             logger.error("Stack: {}", e);
@@ -53,8 +58,26 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public boolean update(BasicPlayerRequest basicPlayerRequest) {
+        boolean updated = false;
+        try {
+            Player player;
+            Optional<Player> optionalPlayer = playerRepo.findByUserName(basicPlayerRequest.getUserName());
+            if (optionalPlayer.isPresent()) {
+                player = optionalPlayer.get();
+                player.setFirstName(basicPlayerRequest.getFirstName());
+                player.setEmail(basicPlayerRequest.getEmail());
+                player.setLastName(basicPlayerRequest.getLastName());
+                player.setPassword(basicPlayerRequest.getPassword());
+                player.setPlayerType(basicPlayerRequest.getPlayerType());
+                playerRepo.save(player);
+                updated = true;
+            }
 
-        return false;
+        } catch (Exception e) {
+            logger.error("Couldn't find a User with username: {}", basicPlayerRequest.getUserName());
+            logger.error("Stack: {}", e);
+        }
+        return updated;
     }
 
     @Override

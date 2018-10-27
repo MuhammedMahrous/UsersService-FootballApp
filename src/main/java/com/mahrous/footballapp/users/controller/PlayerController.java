@@ -10,6 +10,4 @@ public interface PlayerController {
     BasicPlayerResponse find(String userName);
 
     BooleanResponse update(BasicPlayerRequest basicPlayerRequest);
-
-    BooleanResponse delete(String userName);
 }

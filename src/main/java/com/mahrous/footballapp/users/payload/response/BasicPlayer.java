@@ -7,18 +7,16 @@ public class BasicPlayer {
     private String lastName;
     private String userName;
     private String email;
-    private String password;
     private PlayerType playerType;
 
     public BasicPlayer() {
     }
 
-    public BasicPlayer(String firstName, String lastName, String userName, String email, String password, PlayerType playerType) {
+    public BasicPlayer(String firstName, String lastName, String userName, String email, PlayerType playerType) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.email = email;
-        this.password = password;
         this.playerType = playerType;
     }
 
@@ -52,14 +50,6 @@ public class BasicPlayer {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public PlayerType getPlayerType() {

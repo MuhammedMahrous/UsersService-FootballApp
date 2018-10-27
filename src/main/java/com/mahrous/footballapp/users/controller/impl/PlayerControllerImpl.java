@@ -17,15 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-@RestController("/api/player")
+@RestController
+@RequestMapping("/api/player")
 public class PlayerControllerImpl implements PlayerController {
     private static Logger logger = LoggerFactory.getLogger(PlayerController.class);
     private PlayerService playerService;
     private PlayerMapper playerMapper;
-
-    public PlayerService getPlayerService() {
-        return playerService;
-    }
 
     @Autowired
     public void setPlayerService(PlayerService playerService) {
@@ -33,16 +30,12 @@ public class PlayerControllerImpl implements PlayerController {
     }
 
 
-    public PlayerMapper getPlayerMapper() {
-        return playerMapper;
-    }
-
     @Autowired
     public void setPlayerMapper(PlayerMapper playerMapper) {
         this.playerMapper = playerMapper;
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
     @Override
     public BooleanResponse create(@RequestBody @Valid BasicPlayerRequest basicPlayerRequest) {
 
@@ -50,20 +43,20 @@ public class PlayerControllerImpl implements PlayerController {
         try {
             Boolean created = playerService.create(basicPlayerRequest);
             if (created) {
-                booleanResponse = new BooleanResponse(new BooleanWithMessage(created,"Sucessfully created!"), HttpStatus.OK);
+                booleanResponse = new BooleanResponse(new BooleanWithMessage(created, "Successfully created!"), HttpStatus.CREATED);
                 logger.info("Created a player with request: {}", basicPlayerRequest);
             } else {
-                booleanResponse = new BooleanResponse(new BooleanWithMessage(created,"Username or email already exists!"), HttpStatus.NOT_ACCEPTABLE);
+                booleanResponse = new BooleanResponse(new BooleanWithMessage(created, "Username or email already exists!"), HttpStatus.NOT_ACCEPTABLE);
             }
         } catch (Exception e) {
             logger.error("Error creating a player with request: {}", basicPlayerRequest);
             logger.error("Stack Trace: {}", e);
-            booleanResponse = new BooleanResponse(HttpStatus.INTERNAL_SERVER_ERROR);
+            booleanResponse = new BooleanResponse(HttpStatus.NO_CONTENT);
         }
         return booleanResponse;
     }
 
-    @GetMapping("find/{userName}")
+    @GetMapping("/find/{userName}")
     @Override
     public BasicPlayerResponse find(@PathVariable @NotBlank String userName) {
         BasicPlayerResponse basicPlayerResponse;
@@ -83,12 +76,28 @@ public class PlayerControllerImpl implements PlayerController {
     }
 
     @Override
-    public BooleanResponse update(BasicPlayerRequest basicPlayerRequest) {
-        return null;
+    @PutMapping("/update")
+    public BooleanResponse update(@RequestBody BasicPlayerRequest basicPlayerRequest) {
+        boolean updated;
+        BooleanResponse basicPlayerResponse;
+        try {
+            updated = playerService.update(basicPlayerRequest);
+            if (updated) {
+                BooleanWithMessage booleanWithMessage = new BooleanWithMessage();
+                booleanWithMessage.setStatus(updated);
+                booleanWithMessage.setMsg("Successfully updated player info");
+                basicPlayerResponse = new BooleanResponse(booleanWithMessage, HttpStatus.OK);
+            } else {
+                basicPlayerResponse = new BooleanResponse(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            logger.error("Error updating info for user with username :{}", basicPlayerRequest.getUserName());
+            logger.error("Stack trace: {}", e);
+            basicPlayerResponse = new BooleanResponse(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return basicPlayerResponse;
     }
 
-    @Override
-    public BooleanResponse delete(String userName) {
-        return null;
-    }
 }
+
+// TODO: change boilerplate code with AOP
